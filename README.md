@@ -1,4 +1,4 @@
-# g2-prediction-team2
+# Gene Prediction
 
 This repository contains a set of gene prediction scripts for Team II's Gene Prediction Group. 
 
