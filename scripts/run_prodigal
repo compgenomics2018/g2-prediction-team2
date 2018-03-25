@@ -1,0 +1,51 @@
+#!/usr/bin/perl -w
+
+#hello test
+
+use strict;
+use warnings;
+
+## the scrip will take 2 parameters: file name (for a list of assemblies), and path (to the assemblies)
+## and it will generate 2 files (both gff and protein translation fasta files)
+## the output files will be put into ./prodigal_gff directory
+
+my $out_directory = "./prodigal_gff";
+
+if ($ARGV[0]) {open FILE, "<$ARGV[0]";}
+else {print "need: filename and path in the command line!\n"; exit 0;} 
+
+my $path = "";
+if ($ARGV[1]) {$path = $ARGV[1];}
+else {print "need: filename and path in the command line!\n"; exit 0;} 
+
+if (! -e $ARGV[0]) {print "$ARGV[0] does not exist"; exit 1;}
+
+
+my @FASTA_list;
+
+#push input files line by line into @input
+while (<FILE>) {
+	next if /^(\s)*$/; #get rid of empty lines
+	chomp;
+	push(@FASTA_list, $_);
+}
+close FILE;
+
+## --obsolte my $prefix = "/projects/data/Final_Assemblies/"; #path for the assembly files
+my $command = "";
+my $file_name = "";
+if (! -e $out_directory) {system ("mkdir ".$out_directory)};
+
+for (my $i = 0; $i < @FASTA_list+0; $i++) {
+	$file_name = $FASTA_list[$i];
+	$command = "./prodigal -q -i ".$path.$file_name." -o "."$out_directory/";
+	$file_name =~ s/fasta/gff/;
+	$command = $command.$file_name." -f gff";
+	$command = $command." -a "."$out_directory/".$file_name.".fasta"; #print out the protein fasta file
+	system ($command);
+	print "Done with ",$file_name,"\n";
+
+}
+
+
+
