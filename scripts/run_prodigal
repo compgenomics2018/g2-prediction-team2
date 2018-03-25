@@ -12,14 +12,14 @@ use warnings;
 my $out_directory = "";
 
 if ($ARGV[0]) {open FILE, "<$ARGV[0]";}
-else {print "need: filename and path in the command line!\n"; exit 0;} 
+#else {print "need: filename and path in the command line!\n"; exit 0;} 
 
 my $path = "";
 if ($ARGV[1]) {$path = $ARGV[1];}
-else {print "need: filename and path in the command line!\n"; exit 0;} 
+#else {print "need: filename and path in the command line!\n"; exit 0;} 
 
 if ($ARGV[2]) {$out_directory = $ARGV[2];}
-else {print "need a directory for output files!\n"; exit 0;}
+#else {print "need a directory for output files!\n"; exit 0;}
 
 if (! -e $ARGV[0]) {print "$ARGV[0] does not exist"; exit 1;}
 
