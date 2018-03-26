@@ -24,5 +24,5 @@ for line in assembly_files:
     assembly_file = input_files_loc + assembly_file_name
     file_name, extension = os.path.splitext(assembly_file_name)
     output_file = output_directory + file_name + "." + output_format
-    cmd = 'gmsn.pl %s --clean --format %s --output %s --fnn'%(assembly_file, output_format , output_file)
+    cmd = 'gmsn.pl %s --clean --format %s --output %s'%(assembly_file, output_format , output_file)
     os.system(cmd)
