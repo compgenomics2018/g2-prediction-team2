@@ -37,7 +37,7 @@ close FILE;
 ## --obsolte my $prefix = "/projects/data/Final_Assemblies/"; #path for the assembly files
 my $command = "";
 my $file_name = "";
-if (! -e $out_directory) {system ("mkdir ".$out_directory)};
+#if (! -e $out_directory) {system ("mkdir ".$out_directory)};
 
 for (my $i = 0; $i < @FASTA_list+0; $i++) {
 	$file_name = $FASTA_list[$i];
