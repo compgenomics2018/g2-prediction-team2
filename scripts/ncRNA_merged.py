@@ -32,9 +32,15 @@ for line in assembly_files:
     output_file = output_directory + file_name + "." + "gff"
     cmd_1 = 'bedtools intersect -s -v -f 0.8 -F 0.8 -a %s -b %s > merged_tRNA_file'%(tRNAscan_predicted, rfam_predicted)
     cmd_2 = 'bedtools intersect -s -v -f 0.8 -F 0.8 -a %s -b %s > merged_ara_file'%(aragron_predicted, rfam_predicted) 
-    cmd_3 = 'cat %s %s %s >> %s'%(rfam_predicted,"merged_tRNA_file","merged_ara_file",output_file)
+    cmd_3 = 'bedtools intersect -s -v -f 0.8 -F 0.8 -a merged_tRNA_file -b merged_ara_file > merged_file'
+    cmd_4 = 'cat merged_ara_file merged_file >> merged_tRNA_ara_file'
+    cmd_5 = 'cat %s merged_tRNA_ara_file >> %s'%(rfam_predicted, output_file)
     os.system(cmd_1)
     os.system(cmd_2)
     os.system(cmd_3)
+    os.system(cmd_4)
+    os.system(cmd_5)
     os.system("rm merged_tRNA_file")
     os.system("rm merged_ara_file")
+    os.system("rm merged_file")
+    os.system("rm merged_tRNA_ara_file")
