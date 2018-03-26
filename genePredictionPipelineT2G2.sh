@@ -24,7 +24,7 @@ while getopts ":p:tv" opt; do
 	  ;;
     v ) v=1
 	  ;;
-    \? ) echo "Usage: -p path/to/assembledGenomes ,  -t if you want to keep the temp directories ,  -v for verbose mode"
+    \? ) echo "Usage: [-p path/to/assembledGenomes], [-t if you want to keep the temp directories], [-v for verbose mode]"
       ;;
   esac
 done
@@ -74,19 +74,19 @@ if [ $v == 1 ]; then
     printf "Predicting genes using prodigal...\\n"
 fi
 
-./scripts/run_prodigal temp/fileList.txt $inputPath temp/prodigalResults/
+./scripts/run_prodigal temp/fileList.txt $path temp/genePrediction/prodigalResults/
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
 fi
 
-##### GeneMarkHMM
+##### GeneMarkS
 
 if [ $v == 1 ]; then
-    printf "Predicting genes using GeneMarkHMM...\\n"
+    printf "Predicting genes using GeneMarkS...\\n"
 fi
 
-./scripts/gm_script.py -a temp/fileList.txt -i $inputPath -o temp/geneMarkResults/ -f gff
+python scripts/gm_script.py -a temp/fileList.txt -i $path -o temp/genePrediction/geneMarkResults/ -f GFF
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -142,13 +142,13 @@ if [ $v == 1 ]; then
     printf "Starting to merge results...\\n"
 fi
 
-##### Merge Prodigal + GeneMarkHMM Results
+##### Merge Prodigal + GeneMarkS Results
 
 if [ $v == 1 ]; then
-    printf "Merging Prodigal and GeneMarkHMM results...\\n"
+    printf "Merging Prodigal and GeneMarkS results...\\n"
 fi
 
-./ab_initio_merged.py -a temp/fileList.txt -i1 temp/genePrediction/geneMarkResults -i2 temp/genePrediction/prodigalResults -o temp/merging/abinitioMerge/ -f gff
+python ab_initio_merged.py -a temp/fileList.txt -i1 temp/genePrediction/geneMarkResults -i2 temp/genePrediction/prodigalResults -o temp/merging/abinitioMerge/ -f gff
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
