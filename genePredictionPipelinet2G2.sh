@@ -2,7 +2,6 @@
 
 ##### Final pipeline for Comp. Genomics 2018 Team 2, Group 2 (Gene Prediction)
 ##### This script will predict genes in any number of assembled genomes
-##### Average runtime per genome:
 
 ##### HOW TO RUN
 ### put all of the assembled genomes into a directory
@@ -37,11 +36,15 @@ if [ $v == 1 ]; then
 fi
 
 mkdir temp
-mkdir temp/prodigalResults
-mkdir temp/geneMarkResults
-mkdir temp/rfamResults
-mkdir temp/aragonResults
-mkdir temp/tRNAscanResults
+mkdir temp/genePrediction
+mkdir temp/merging
+mkdir temp/genePrediction/prodigalResults
+mkdir temp/genePrediction/geneMarkResults
+mkdir temp/genePrediction/rfamResults
+mkdir temp/genePrediction/aragonResults
+mkdir temp/genePrediction/tRNAscanResults
+mkdir temp/merging/abinitioMerge
+mkdir temp/merging/ncRNAMerge
 mkdir results
 
 if [ $v == 1 ]; then
@@ -71,7 +74,7 @@ if [ $v == 1 ]; then
     printf "Predicting genes using prodigal...\\n"
 fi
 
-./scripts/run_prodigal temp/fileList.txt $inputPath temp/prodigalResults
+./scripts/run_prodigal temp/fileList.txt $inputPath temp/prodigalResults/
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -83,7 +86,7 @@ if [ $v == 1 ]; then
     printf "Predicting genes using GeneMarkHMM...\\n"
 fi
 
-#script to run GeneMark
+./scripts/gm_script.py -a temp/fileList.txt -i $inputPath -o temp/geneMarkResults/ -f gff
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -92,7 +95,7 @@ fi
 ##### Rfam
 
 if [ $v == 1 ]; then
-    printf "Starting to predict genes on non-Coding RNA. Half way there!!\\n"
+    printf "Starting to predict genes on non-Coding RNA. Almost there!!\\n"
 fi
 
 if [ $v == 1 ]; then
@@ -145,7 +148,7 @@ if [ $v == 1 ]; then
     printf "Merging Prodigal and GeneMarkHMM results...\\n"
 fi
 
-#script to merge Prodigal + GeneMark
+./ab_initio_merged.py -a temp/fileList.txt -i1 temp/genePrediction/geneMarkResults -i2 temp/genePrediction/prodigalResults -o temp/merging/abinitioMerge/ -f gff
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -184,9 +187,9 @@ fi
 if [ $t == 0 ]; then
     rm -r temp
 elif [ $t == 1 ]; then
-    printf "Temp directory will not be deleted.\\n"
+    echo "Temp directory will not be deleted.\\n"
 fi
 
 if [ $v == 1 ]; then
-    printf "Everything is ready, you should now have high-quality gene predictions in the /results directory.\\n"
+    printf "Everything is ready, you should now have high-quality gene predictions in the /results directory\\n"
 fi
