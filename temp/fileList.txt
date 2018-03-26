@@ -1,3 +1,0 @@
-SRR3982229.fasta
-SRR3982230.fasta
-SRR3982253.fasta
