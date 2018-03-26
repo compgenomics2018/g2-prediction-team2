@@ -41,10 +41,10 @@ my $file_name = "";
 
 for (my $i = 0; $i < @FASTA_list+0; $i++) {
 	$file_name = $FASTA_list[$i];
-	$command = "./prodigal -q -i ".$path.$file_name." -o "."$out_directory/";
+	$command = "prodigal -q -i ".$path.$file_name." -o "."$out_directory/";
 	$file_name =~ s/fasta/gff/;
 	$command = $command.$file_name." -f gff";
-	$command = $command." -a "."$out_directory/".$file_name.".fasta"; #print out the protein fasta file
+	##$command = $command." -a "."$out_directory/".$file_name.".fasta"; #print out the protein fasta file
 	system ($command);
 	print "Done with ",$file_name,"\n";
 
