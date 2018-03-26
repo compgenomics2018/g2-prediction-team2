@@ -89,8 +89,7 @@ while (<INFILE>) {
 	    $score."\t".
 	    $strand."\t".
 	    $phase."\t".
-	    $attribute."\t".
-	    "\n";
+	    $attribute."\n";
 
     }
 		else{next;}
