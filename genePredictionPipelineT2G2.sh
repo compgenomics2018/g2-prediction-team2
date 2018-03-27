@@ -57,10 +57,13 @@ mkdir temp/merging
 mkdir temp/genePrediction/prodigalResults
 mkdir temp/genePrediction/geneMarkResults
 mkdir temp/genePrediction/rfamResults
+mkdir temp/genePrediction/rfamResults/other
 mkdir temp/genePrediction/aragonResults
 mkdir temp/genePrediction/tRNAscanResults
 mkdir temp/merging/abinitioMerge
+mkdir temp/merging/abinitioMerge/clean
 mkdir temp/merging/ncRNAMerge
+mkdir temp/merging/ncRNAMerge/clean
 mkdir results
 
 if [ $v == 1 ]; then
@@ -68,7 +71,7 @@ if [ $v == 1 ]; then
 fi
 
 if [ $v == 1 ]; then
-    printf "Creating a file containing the list of the filenames of the asselbles genomes...\\n"
+    printf "Creating a list of the filenames of the asselbles genomes...\\n"
 fi
 
 #create file with a list of the assemblies
@@ -96,11 +99,11 @@ if [ $v == 1 ]; then
     printf "Done!\\n"
 fi
 
-##### GeneMarkS
+##### GeneMark (if -f flag is used, GeneMarkHMM will be run, otherwise GeneMarkS will run)
 
 if [ $f == 0 ]; then
     if [ $v == 1 ]; then
-	printf "Predicting genes using GeneMarkS...\\n"
+	printf "Predicting genes using GeneMark-S...\\n"
 	fi
     
     python scripts/gm_script.py -a temp/fileList.txt -i $path -o temp/genePrediction/geneMarkResults/ -f GFF
@@ -113,11 +116,14 @@ if [ $f == 0 ]; then
 	fi
 elif [ $f == 1 ]; then
     if [ $v == 1 ]; then
-	printf "Predicting genes using GeneMarkHMM...\\n"
+	printf "Predicting genes using GeneMark-HMM...\\n"
 	fi
     
     python scripts/gmhmmp.py -a temp/fileList.txt -i $path -o temp/genePrediction/geneMarkResults/ -f GFF
     
+    rm GeneMark_hmm*
+    rm gms.log
+
     if [ $v == 1 ]; then
 	printf "Done!\\n"
 	fi
@@ -134,13 +140,12 @@ if [ $f == 0 ]; then
 	printf "Predicting genes on non-coding RNA using Rfam...\\n"
 	fi
 
-    #script to run Rfam > write to /genePrediction/rfamResults
+    ./run_rfam.sh -g temp/fileList.txt -c scripts/other/Rfam.clanin -m scripts/other/Rfam.cm -t temp/genePrediction/rfamResults/ -o temp/genePrediction/other/rfamResults/other/ -p $path
 
     if [ $v == 1 ]; then
 	printf "Done!\\n"
 	fi
 fi
-
 
 ##### Aragon
 
@@ -148,7 +153,7 @@ if [ $v == 1 ]; then
     printf "Predicting genes on non-coding RNA using Aragon...\\n"
 fi
 
-#script to run Aragon > write to /genePrediction/aragonResults
+./run_arag.sh -g temp/fileList.txt -p $path -o temp/genePrediction/aragonResults/
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -160,7 +165,7 @@ if [ $v == 1 ]; then
     printf "Predicting genes on non-coding RNA using tRNAscan...\\n"
 fi
 
-#script to run tRNAscan > write to /genePrediction/tRNAscanResults
+./run_tRNAscan.sh -g temp/fileList.txt -p $path -o temp/genePrediction/tRNAscanResults/
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -185,6 +190,10 @@ if [ $f == 0 ]; then
 
     python ab_initio_merged.py -a temp/fileList.txt -i1 temp/genePrediction/geneMarkResults -i2 temp/genePrediction/prodigalResults -o temp/merging/abinitioMerge/ -f gff
 
+    ls temp/merging/abinitioMerge/ > temp/abinitioMerge_list.txt
+
+    perl scripts/clean_gff.pl temp/abinitioMerge_list.txt temp/merging/abinitioMerge/ temp/merging/abinitioMerge/clean/
+
     if [ $v == 1 ]; then
 	printf "Done!\\n"
 	fi
@@ -198,6 +207,10 @@ fi
 
 #script to merge all ncRNA results > write too /merging/ncRNAMerge
 
+ls temp/merging/ncRNAMerge/ > temp/ncRNAMerge_list.txt
+
+perl scripts/clean_gff.pl temp/ncRNAMerge_list.txt temp/merging/ncRNAMerge/ temp/merging/ncRNAMerge/clean/
+
 if [ $v == 1 ]; then
     printf "Done!\\n"
 fi
@@ -208,7 +221,7 @@ if [ $v == 1 ]; then
     printf "Merging all results...\\n"
 fi
 
-#script to merge abinitio + ncRNA > write to /results
+# script to cat results
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
