@@ -40,3 +40,20 @@ do
     cmscan -Z $Z --cut_ga --rfam --nohmmonly --cpu 6 --tblout "$tblout/$line.tblout" --fmt 2 --clanin $claninpath $cmpath "$pathtogenomes/$line" > "$cmscan/$line.cmscan"
     grep -v " = " "$tblout/$line.tblout" > "$tblout/$line.deoverlapped.tblout"
 done < "$genomepath"
+
+for file in "$tblout/*.deoverlapped.tblout"
+do
+	i=$(echo $file | awk -F  "." '{print $1}')
+	echo "##gff-version 3" > $i.gff
+	while read -r line
+	do
+		readline=$line
+		if [[ $readline =~ ^[0-9]+ ]]
+		then
+			echo $readline | awk '$12 == "+" {printf "%s\tInfernal-1.1.2/Rfam\t%s\t%d\t%d\t%s\t%s\t.\tTarget_Name:%s;Model:%s;Target/RF_ACC:%s;Clan_Name:%s;GC:%s\n" ,$4,$2,$10,$11,$18,$12,$2,$7,$3,$6,$15}' >> $i.gff
+			echo $readline | awk '$12 == "-" {printf "%s\tInfernal-1.1.2/Rfam\t%s\t%d\t%d\t%s\t%s\t.\tTarget_Name:%s;Model:%s;Target/RF_ACC:%s;Clan_Name:%s;GC:%s\n" ,$4,$2,$11,$10,$18,$12,$2,$7,$3,$6,$15}' >> $i.gff
+		fi
+	done < $file
+done
+
+rm "$tblout/*.tblout"
