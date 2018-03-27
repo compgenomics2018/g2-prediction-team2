@@ -27,8 +27,8 @@ for line in assembly_files:
     cmd = 'gmsn.pl %s --format %s --output %s'%(assembly_file, output_format , output_file)
     os.system(cmd)
     break
-
-os.system("rm *.GFF")
+cmd2 = "rm %s*.GFF"%(output_directory)
+os.system(cmd2)
 
 for line in assembly_files:
     assembly_file_name = line.rstrip()
