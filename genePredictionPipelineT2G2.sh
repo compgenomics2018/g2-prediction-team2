@@ -5,31 +5,47 @@
 
 ##### HOW TO RUN
 ### put all of the assembled genomes into a directory
-### ./genePredictionPipelineT2G2 /path/to/assemblies
+### Run this command:  ./genePredictionPipelineT2G2.sh -p /path/to/assemblies [-t and -v are optional]
+### Usage: [-p /path/to/assemblies], [-f for faster predictions, will run GeneMarkHMM instead of GeneMarkS, will not run Rfam],
+###[-t to keep temp filed and directories], [-v for verbose mode]
 
 ##### Input and Outputs
 ### input: path to assemblies
-### temp: results from each individual tool and a file containing a list of the assembled genomes (this directory will be removed unless otherwise stated)
-### output: one gff file per sample containing all predicted genes
+### temp: results from each individual tool (this directory will be removed unless otherwise stated)
+### output: one gff file per sample containing all predicted genes (union of all 5 tools)
 
 ###################################################################### Command line Arguments
 t=0
 v=0
+f=0
 
-while getopts ":p:tv" opt; do
+while getopts ":p:ftv" opt; do
   case ${opt} in
     p ) path=$OPTARG
+	  ;;
+      f )f=1
 	  ;;
       t )t=1
 	  ;;
     v ) v=1
 	  ;;
-    \? ) echo "Usage: [-p path/to/assembledGenomes], [-t if you want to keep the temp directories], [-v for verbose mode]"
+    \? ) echo "Usage: [-p path/to/assembledGenomes], [[-f for faster predictions, will run GeneMarkHMM instead of GeneMarkS, will not run Rfam], [-t to keep temp files and directories], [-v for verbose mode]"
       ;;
   esac
 done
 
 ###################################################################### Create directory structure
+
+#warning statement when fast version of script is run
+if [ $f == 1 ]; then
+    printf "****************************************************************************\\n\\n"
+    printf "WARNING!\\n"
+    printf "You are running the fast version of the script, this might affect the quality of your results.\\n"
+    printf "GeneMark-S will not be run. GeneMark-HMM will be run instead.\\n"
+    printf "Rfam will not be run. Results might contain less sRNA gene predictions.\\n\\n"
+    printf "****************************************************************************\\n\\n"
+fi
+
 
 if [ $v == 1 ]; then
     printf "Creating directory structure...\\n"
@@ -82,14 +98,29 @@ fi
 
 ##### GeneMarkS
 
-if [ $v == 1 ]; then
-    printf "Predicting genes using GeneMarkS...\\n"
-fi
-
-python scripts/gm_script.py -a temp/fileList.txt -i $path -o temp/genePrediction/geneMarkResults/ -f GFF
-
-if [ $v == 1 ]; then
-    printf "Done!\\n"
+if [ $f == 0 ]; then
+    if [ $v == 1 ]; then
+	printf "Predicting genes using GeneMarkS...\\n"
+	fi
+    
+    python scripts/gm_script.py -a temp/fileList.txt -i $path -o temp/genePrediction/geneMarkResults/ -f GFF
+    
+    rm GeneMark_hmm*
+    rm gms.log
+    
+    if [ $v == 1 ]; then
+	printf "Done!\\n"
+	fi
+elif [ $f == 1 ]; then
+    if [ $v == 1 ]; then
+	printf "Predicting genes using GeneMarkHMM...\\n"
+	fi
+    
+    python scripts/gmhmmp.py -a temp/fileList.txt -i $path -o temp/genePrediction/geneMarkResults/ -f GFF
+    
+    if [ $v == 1 ]; then
+	printf "Done!\\n"
+	fi
 fi
 
 ##### Rfam
@@ -98,15 +129,18 @@ if [ $v == 1 ]; then
     printf "Starting to predict genes on non-Coding RNA. Almost there!!\\n"
 fi
 
-if [ $v == 1 ]; then
-    printf "Predicting genes on non-coding RNA using Rfam...\\n"
+if [ $f == 0 ]; then
+    if [ $v == 1 ]; then
+	printf "Predicting genes on non-coding RNA using Rfam...\\n"
+	fi
+
+    #script to run Rfam > write to /genePrediction/rfamResults
+
+    if [ $v == 1 ]; then
+	printf "Done!\\n"
+	fi
 fi
 
-#script to run Rfam
-
-if [ $v == 1 ]; then
-    printf "Done!\\n"
-fi
 
 ##### Aragon
 
@@ -114,7 +148,7 @@ if [ $v == 1 ]; then
     printf "Predicting genes on non-coding RNA using Aragon...\\n"
 fi
 
-#script to run Aragon
+#script to run Aragon > write to /genePrediction/aragonResults
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -126,7 +160,7 @@ if [ $v == 1 ]; then
     printf "Predicting genes on non-coding RNA using tRNAscan...\\n"
 fi
 
-#script to run tRNAscan
+#script to run tRNAscan > write to /genePrediction/tRNAscanResults
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -144,14 +178,16 @@ fi
 
 ##### Merge Prodigal + GeneMarkS Results
 
-if [ $v == 1 ]; then
-    printf "Merging Prodigal and GeneMarkS results...\\n"
-fi
+if [ $f == 0 ]; then
+    if [ $v == 1 ]; then
+	printf "Merging Prodigal and GeneMarkS results...\\n"
+	fi
 
-python ab_initio_merged.py -a temp/fileList.txt -i1 temp/genePrediction/geneMarkResults -i2 temp/genePrediction/prodigalResults -o temp/merging/abinitioMerge/ -f gff
+    python ab_initio_merged.py -a temp/fileList.txt -i1 temp/genePrediction/geneMarkResults -i2 temp/genePrediction/prodigalResults -o temp/merging/abinitioMerge/ -f gff
 
-if [ $v == 1 ]; then
-    printf "Done!\\n"
+    if [ $v == 1 ]; then
+	printf "Done!\\n"
+	fi
 fi
 
 ##### Merge ncRNA Results
@@ -160,7 +196,7 @@ if [ $v == 1 ]; then
     printf "Merging non-coding RNA results...\\n"
 fi
 
-#script to merge Prodigal + GeneMark
+#script to merge all ncRNA results > write too /merging/ncRNAMerge
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -172,7 +208,7 @@ if [ $v == 1 ]; then
     printf "Merging all results...\\n"
 fi
 
-#script to merge abinitio + ncRNA
+#script to merge abinitio + ncRNA > write to /results
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -191,5 +227,5 @@ elif [ $t == 1 ]; then
 fi
 
 if [ $v == 1 ]; then
-    printf "Everything is ready, you should now have high-quality gene predictions in the /results directory\\n"
+    printf "Everything is ready, you should now have high-quality gene predictions in the /results directory.\\n"
 fi
