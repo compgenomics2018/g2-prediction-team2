@@ -13,5 +13,5 @@ OUTPUT_FASTA_PATH="/projects/data/gene_prediction_team2/fasta_ab_initio_merged/"
 for fullFilePath in $MERGED_GFF_PATH/*.gff;
 do
 	filename=$(basename $fullFilePath)
-	$BEDTOOLS_PATH/bedtools getfasta -fi $ASSEMBLIES_PATH/${filename%.*}.fasta -bed $MERGED_GFF_PATH/${filename%.*}.gff > $OUTPUT_FASTA_PATH/${filename%.*}_genes.fa
+	$BEDTOOLS_PATH/bedtools getfasta -name+ -fi $ASSEMBLIES_PATH/${filename%.*}.fasta -bed $MERGED_GFF_PATH/${filename%.*}.gff > $OUTPUT_FASTA_PATH/${filename%.*}_genes.fa
 done
