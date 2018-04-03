@@ -40,21 +40,21 @@ The repository is organized as follows:
 
 The temp/ directory is organized as follows:
 
-├── temp/
-    ├── genePrediction
-    	├── prodigalResults	# Directory containing results from Prodigal
-	├── geneMarkResults	# Directory containing results from GeneMark-S (or GeneMark-HMM if '-g' is used)
-	├── rfamResults		# Directory containing results from Rfam
-	    ├── other		# Directory containing files created when Rfam is run
-	├── aragnoResults	# Directory containing results from Aragorn
-	├──tRNAscanResults	# Directory containing results from tRNAscan
-    ├── merging			# Directory containing all of the merged results
-    	├── abinitioMerge	# Directory containing the merged results of Prodigal and GeneMark
-	├── ncRNAMerge		# Directory containing the merged results of Rfam, Aragorn, and tRNAscan
-	├── allFiles		# Directory containing the merged gff files (before cleaning)
-    ├── results			# Directory containing the final results
-    	├── gff			# If '-f' is used, results in gff format will be stored here
-	├── fasta		# If '-f' is used, gff to fasta conversion results will be placed here
+	├── temp/
+	    ├── genePrediction
+		├── prodigalResults	# Directory containing results from Prodigal
+		├── geneMarkResults	# Directory containing results from GeneMark-S (or GeneMark-HMM if '-g' is used)
+		├── rfamResults		# Directory containing results from Rfam
+		    ├── other		# Directory containing files created when Rfam is run
+		├── aragnoResults	# Directory containing results from Aragorn
+		├──tRNAscanResults	# Directory containing results from tRNAscan
+	    ├── merging			# Directory containing all of the merged results
+		├── abinitioMerge	# Directory containing the merged results of Prodigal and GeneMark
+		├── ncRNAMerge		# Directory containing the merged results of Rfam, Aragorn, and tRNAscan
+		├── allFiles		# Directory containing the merged gff files (before cleaning)
+	    ├── results			# Directory containing the final results
+		├── gff			# If '-f' is used, results in gff format will be stored here
+		├── fasta		# If '-f' is used, gff to fasta conversion results will be placed here
 
 
 ##### Installation & Dependencies
