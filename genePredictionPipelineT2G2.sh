@@ -149,11 +149,11 @@ if [ $v == 1 ]; then
     printf "Predicting genes on non-coding RNA using Rfam...\\n"
 fi
 
-printf "Warning! The database files are zipped when downloaded from github, make sure they are unzipped before running this pipeline. "
-
-printf "Rfam might not run correctly.\\n"
+unzip scripts/other/Rfam*
 
 ./scripts/run_rfam.sh -g temp/fileList.txt -c scripts/other/Rfam.clanin -m scripts/other/Rfam.cm -t temp/genePrediction/rfamResults/ -o temp/genePrediction/rfamResults/other/ -p $path
+
+gunzip scripts/other/Rfam*
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
@@ -277,7 +277,7 @@ if [ $f == 1 ]; then
         printf "Converting GFF files to Fasta format...\\n"
     fi
 
-    # add script to convert gff to fasta                                                                                
+    ./scripts/gff2fasta.sh -a $path -m results/gff/ -o results/fasta/                                                                             
 
     if [ $v == 1 ]; then
         printf "Done!\\n"
