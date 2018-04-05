@@ -2,6 +2,8 @@ Team 2, Group 2 - Gene Prediction
 
 This repository contains a pipeline to predict genes from assembled genomes in fasta format. 
 
+./genePredictionPipelineT2G2.sh -p /path/to/assemblies
+
 ##### Tools Used by this Pipeline
       Prodigal, GeneMark-S (or GeneMark-HMM when '-f' flag is used), Rfam, Aragorn, and tRNAscan
 
@@ -56,11 +58,25 @@ The temp/ directory is organized as follows (temp directory will be deleted unle
 
 ##### Installation & Dependencies
 
-The following tools must be downloaded, installed, and put on the user's PATH env variable:
-Genemark-S
-Genemark-HMM
-Prodigal
-Infernal
-tRNAscan-SE
-Aragorn
-Bedtools
+The following tools must be put on the user's PATH env variable, please follow the links for instructions:
+
+GeneMarkS v.4.30:
+http://opal.biology.gatech.edu/GeneMark/license_download.cgi
+
+Prodigal:
+https://github.com/hyattpd/Prodigal/blob/GoogleImport/README.md
+
+Infernal:
+http://eddylab.org/infernal/
+
+tRNAscan-SE:
+http://lowelab.ucsc.edu/tRNAscan-SE/
+
+Aragorn 1.2.38:
+http://130.235.46.10/ARAGORN/Downloads/
+
+Bedtools:
+http://bedtools.readthedocs.io/en/latest/
+
+gzip:
+https://www.gnu.org/software/gzip/

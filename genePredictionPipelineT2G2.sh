@@ -149,11 +149,11 @@ if [ $v == 1 ]; then
     printf "Predicting genes on non-coding RNA using Rfam...\\n"
 fi
 
-unzip scripts/other/Rfam*
+gunzip scripts/other/Rfam*
 
 ./scripts/run_rfam.sh -g temp/fileList.txt -c scripts/other/Rfam.clanin -m scripts/other/Rfam.cm -t temp/genePrediction/rfamResults/ -o temp/genePrediction/rfamResults/other/ -p $path
 
-gunzip scripts/other/Rfam*
+gzip scripts/other/Rfam*
 
 if [ $v == 1 ]; then
     printf "Done!\\n"
